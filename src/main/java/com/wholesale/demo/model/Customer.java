@@ -1,5 +1,6 @@
 package com.wholesale.demo.model;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,8 @@ public class Customer {
     private String phone;
     private String email;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Order> orders;
-
+    @OneToMany(mappedBy = "customer")
+    private List<Orderss> orders;
 
     public long getId() {
         return id;
@@ -62,11 +62,11 @@ public class Customer {
         this.email = email;
     }
 
-    public List<Order> getOrders() {
+    public List<Orderss> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(List<Orderss> orders) {
         this.orders = orders;
     }
 }

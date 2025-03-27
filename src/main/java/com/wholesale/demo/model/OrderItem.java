@@ -2,11 +2,9 @@ package com.wholesale.demo.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItem {
@@ -18,12 +16,14 @@ public class OrderItem {
 
 
     @ManyToOne
-    @JoinColumn(name = "orderID", nullable = false)
-    private Order order;
+    @JoinColumn(name = "orderID")
+    private Orderss order;
+
 
     @ManyToOne
     @JoinColumn(name = "productID", nullable = false)
     private Product product;
+
 
     public long getId() {
         return id;
@@ -49,11 +49,11 @@ public class OrderItem {
         this.price = price;
     }
 
-    public Order getOrder() {
+    public Orderss getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(Orderss order) {
         this.order = order;
     }
 

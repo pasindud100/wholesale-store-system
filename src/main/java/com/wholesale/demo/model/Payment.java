@@ -2,17 +2,12 @@ package com.wholesale.demo.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
-@Data
+@AllArgsConstructor
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +16,11 @@ public class Payment {
     private String paymentMethod;
 
     @OneToOne
-    @JoinColumn(name = "orderID", nullable = false)
-    private Order order;
+    @JoinColumn(name = "orderID", unique = true, nullable = false)
+    private Orderss order;
 
     @OneToOne
-    @JoinColumn(name = "invoiceID", nullable = false)
+    @JoinColumn(name = "invoiceID", unique = true, nullable = false)
     private Invoice invoice;
 
     public Long getId() {
@@ -52,11 +47,11 @@ public class Payment {
         this.paymentMethod = paymentMethod;
     }
 
-    public Order getOrder() {
+    public Orderss getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(Orderss order) {
         this.order = order;
     }
 
