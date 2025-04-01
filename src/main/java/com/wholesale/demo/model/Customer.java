@@ -1,15 +1,9 @@
 package com.wholesale.demo.model;
 
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,6 +61,19 @@ public class Customer {
     }
 
     public void setOrders(List<Orderss> orders) {
+        this.orders = orders;
+    }
+
+
+    public Customer() {
+    }
+
+    public Customer(long id, String name, String address, String phone, String email, List<Orderss> orders) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
         this.orders = orders;
     }
 }
