@@ -9,6 +9,9 @@ import com.wholesale.demo.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CustomerService {
 
@@ -25,6 +28,10 @@ public class CustomerService {
         Customer customer = customerMapper.toEntity(customerDTO);
         Customer savedCustomer = customerRepository.save(customer);
         return customerMapper.toDTO(savedCustomer);
+    }
+
+    public List<CustomerDTO> getAllCustomers() {
+        return customerRepository.findAll().stream().map(customerMapper::toDTO).collect(Collectors.toList());
     }
 }
 
