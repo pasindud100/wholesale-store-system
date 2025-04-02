@@ -61,4 +61,11 @@ public class CustomerController {
         CustomerDTO deletedCustomer = customerService.deleteCustomer(id);
         return ResponseEntity.ok(deletedCustomer);
     }
+
+    //search customer from any field values
+    @GetMapping("/search")
+    public ResponseEntity<List<CustomerDTO>> searchCustomers(@RequestParam String searchKeyword) {
+        List<CustomerDTO> matchingCustomers = customerService.searchCustomers(searchKeyword);
+        return ResponseEntity.ok(matchingCustomers);
+    }
 }

@@ -70,6 +70,13 @@ public class CustomerService {
         return null; //give exception if the customer is not found
     }
 
+    public List<CustomerDTO> searchCustomers(String searchKeyword) {
+        List<Customer> customers = customerRepository.searchCustomers(searchKeyword);
+        return customers.stream()
+                .map(customerMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
 
 
 
