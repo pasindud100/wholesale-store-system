@@ -1,11 +1,5 @@
 package com.wholesale.demo.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@AllArgsConstructor
-@NoArgsConstructor
 public class CustomerDTO {
     private long id;
     private String name;

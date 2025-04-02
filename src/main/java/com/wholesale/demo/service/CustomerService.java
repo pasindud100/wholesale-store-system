@@ -1,12 +1,12 @@
 package com.wholesale.demo.service;
 
-
-
 import com.wholesale.demo.dto.CustomerDTO;
 import com.wholesale.demo.mapper.CustomerMapper;
 import com.wholesale.demo.model.Customer;
 import com.wholesale.demo.repository.CustomerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +19,6 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
 
-    @Autowired
     public CustomerService(CustomerRepository customerRepository , CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
         this.customerMapper = customerMapper;
@@ -31,10 +30,18 @@ public class CustomerService {
         return customerMapper.toDTO(savedCustomer);
     }
 
-    public List<CustomerDTO> getAllCustomers() {
-        return customerRepository.findAll().stream().map(customerMapper::toDTO).collect(Collectors.toList());
-    }
+//    public List<CustomerDTO> getAllCustomers() {
+//        return customerRepository.findAll()
+//        .stream().map(customerMapper::toDTO)
+//        .collect(Collectors.toList());
+//    }
 
+    public Page<CustomerDTO> getAllCustomers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Customer> customersPage = customerRepository.findAll(pageable);
+
+        return customersPage.map(customerMapper::toDTO);
+    }
 
     public CustomerDTO getCustomerById(Long id) {
         Optional<Customer> customer = customerRepository.findById(id);
@@ -51,8 +58,20 @@ public class CustomerService {
             return customerMapper.toDTO(updatedCustomer);
         }
         return null;
+    }
+
+    public CustomerDTO deleteCustomer(Long id) {
+        Optional<Customer> customer = customerRepository.findById(id);
+
+        if (customer.isPresent()) {
+            customerRepository.deleteById(id); // Delete the customer
+            return customerMapper.toDTO(customer.get()); // Return the deleted customer details
         }
+        return null; //give exception if the customer is not found
+    }
+
+
+
 
 
 }
-
