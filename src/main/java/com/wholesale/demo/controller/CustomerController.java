@@ -35,7 +35,7 @@ public class CustomerController {
     @GetMapping
     public ResponseEntity<Page<CustomerDTO>> getAllCustomers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "6") int size
     ) {
         Page<CustomerDTO> customers = customerService.getAllCustomers(page, size);
         return ResponseEntity.ok(customers);
@@ -69,3 +69,4 @@ public class CustomerController {
         return ResponseEntity.ok(matchingCustomers);
     }
 }
+

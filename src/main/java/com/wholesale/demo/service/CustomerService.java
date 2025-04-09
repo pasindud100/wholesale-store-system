@@ -58,8 +58,8 @@ public class CustomerService {
             return customerMapper.toDTO(updatedCustomer);
         }
         return null;
-    }
 
+    }
     public CustomerDTO deleteCustomer(Long id) {
         Optional<Customer> customer = customerRepository.findById(id);
 
