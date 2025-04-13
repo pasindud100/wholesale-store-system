@@ -40,7 +40,7 @@ public class OrderService {
         order.setCustomer(customer.get());
 
         Orderss savedOrder = orderRepository.save(order);
-        return orderMapper.toDto(savedOrder);
+        return orderMapper.toDTO(savedOrder);
     }
 
     public List<Orderss> getOrdersByCustomer(Long customerId) {
@@ -50,14 +50,14 @@ public class OrderService {
     public List<OrderDTO> getAllOrders() {
         List<Orderss> orders = orderRepository.findAll();
         return orders.stream()
-                .map(orderMapper::toDto)
+                .map(orderMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public OrderDTO getOrderById(Long id) {
         Orderss order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-        return orderMapper.toDto(order);
+        return orderMapper.toDTO(order);
     }
 
     @Transactional
@@ -69,7 +69,7 @@ public class OrderService {
         existingOrder.setOrderDate(LocalDateTime.now());
 
         Orderss updatedOrder = orderRepository.save(existingOrder);
-        return orderMapper.toDto(updatedOrder);
+        return orderMapper.toDTO(updatedOrder);
     }
 
     @Transactional

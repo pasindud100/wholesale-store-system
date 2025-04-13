@@ -9,10 +9,10 @@ import org.mapstruct.Mapping;
 public interface OrderMapper {
 
     @Mapping(source = "customer.id", target = "customerId")
-    OrderDTO toDto(Orderss orderss);
+    OrderDTO toDTO(Orderss orderss);
 
     @Mapping(source = "customerId", target = "customer.id")
-    Orderss toOrderDto(OrderDTO orderDTO);
+    Orderss toEntity(OrderDTO orderDTO);
 
 
 

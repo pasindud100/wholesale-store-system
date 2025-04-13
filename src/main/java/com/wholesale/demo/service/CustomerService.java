@@ -76,9 +76,4 @@ public class CustomerService {
                 .map(customerMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
-
-
-
-
 }
