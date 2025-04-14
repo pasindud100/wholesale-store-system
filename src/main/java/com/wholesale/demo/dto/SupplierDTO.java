@@ -9,7 +9,6 @@ public class SupplierDTO {
 
     public SupplierDTO() {
     }
-
     public SupplierDTO(Long id, String name, String contactPerson, String address, String phone) {
         this.id = id;
         this.name = name;

@@ -7,13 +7,15 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
-
     @Mapping(source = "customer.id", target = "customerId")
+    @Mapping(target = "orderItems", ignore = true)
+    @Mapping(source = "invoice.id", target = "invoiceId")
+    @Mapping(source = "payment.id", target = "paymentId")
     OrderDTO toDTO(Orderss orderss);
 
     @Mapping(source = "customerId", target = "customer.id")
-    Orderss toEntity(OrderDTO orderDTO);
-
-
-
+    @Mapping(target = "orderItems", ignore = true)
+    @Mapping(source = "invoiceId", target = "invoice.id")
+    @Mapping(source = "paymentId", target = "payment.id")
+    Orderss toEntity(OrderDTO orderssDTO);
 }

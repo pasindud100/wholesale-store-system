@@ -26,8 +26,8 @@ public class Product {
     @JoinColumn(name = "categoryID", nullable = false)
     private Category category;
 
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-//    private List<OrderItem> orderItems;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems;
 
 
     public Long getId() {
@@ -86,11 +86,11 @@ public class Product {
         this.category = category;
     }
 
-//    public List<OrderItem> getOrderItems() {
-//        return orderItems;
-//    }
-//
-//    public void setOrderItems(List<OrderItem> orderItems) {
-//        this.orderItems = orderItems;
-//    }
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
 }

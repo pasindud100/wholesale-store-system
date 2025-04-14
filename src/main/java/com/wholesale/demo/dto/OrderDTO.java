@@ -7,16 +7,20 @@ public class OrderDTO {
     private Long id;
     private LocalDateTime orderDate;
     private Long customerId;
-    private List<Long> orderItemIds;
+    private List<OrderItemDTO> orderItems;
+    private Long invoiceId;
+    private Long paymentId;
 
-    public OrderDTO(Long id, LocalDateTime orderDate, Long customerId, List<Long> orderItemIds) {
+    public OrderDTO() {
+    }
+
+    public OrderDTO(Long id, LocalDateTime orderDate, Long customerId, List<OrderItemDTO> orderItems, Long invoiceId, Long paymentId) {
         this.id = id;
         this.orderDate = orderDate;
         this.customerId = customerId;
-        this.orderItemIds = orderItemIds;
-    }
-
-    public OrderDTO() {
+        this.orderItems = orderItems;
+        this.invoiceId = invoiceId;
+        this.paymentId = paymentId;
     }
 
     public Long getId() {
@@ -43,11 +47,27 @@ public class OrderDTO {
         this.customerId = customerId;
     }
 
-    public List<Long> getOrderItemIds() {
-        return orderItemIds;
+    public List<OrderItemDTO> getOrderItems() {
+        return orderItems;
     }
 
-    public void setOrderItemIds(List<Long> orderItemIds) {
-        this.orderItemIds = orderItemIds;
+    public void setOrderItems(List<OrderItemDTO> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public Long getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(Long invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
+    public Long getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(Long paymentId) {
+        this.paymentId = paymentId;
     }
 }

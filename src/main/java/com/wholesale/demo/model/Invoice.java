@@ -6,13 +6,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime invoiceDate;
+    private double amount;
 
     @OneToOne
     @JoinColumn(name = "orderID", unique = true, nullable = false)
@@ -20,6 +19,17 @@ public class Invoice {
 
     @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
     private Payment payment;
+
+    public Invoice() {
+    }
+
+    public Invoice(Long id, LocalDateTime invoiceDate, double amount, Orderss order, Payment payment) {
+        this.id = id;
+        this.invoiceDate = invoiceDate;
+        this.amount = amount;
+        this.order = order;
+        this.payment = payment;
+    }
 
     public Long getId() {
         return id;
@@ -35,6 +45,13 @@ public class Invoice {
 
     public void setInvoiceDate(LocalDateTime invoiceDate) {
         this.invoiceDate = invoiceDate;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public Orderss getOrder() {

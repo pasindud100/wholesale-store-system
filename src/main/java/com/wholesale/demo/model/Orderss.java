@@ -7,13 +7,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 public class Orderss {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime orderDate;
+    private double amount;
 
     @ManyToOne
     @JoinColumn(name = "customerID", nullable = false)
@@ -28,6 +27,21 @@ public class Orderss {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Payment payment;
 
+
+    public Orderss() {
+    }
+
+    public Orderss(Long id, LocalDateTime orderDate, Customer customer,double amount, List<OrderItem> orderItems, Invoice invoice, Payment payment) {
+        this.id = id;
+        this.orderDate = orderDate;
+        this.customer = customer;
+        this.amount = amount;
+        this.orderItems = orderItems;
+        this.invoice = invoice;
+        this.payment = payment;
+    }
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -50,6 +64,13 @@ public class Orderss {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public List<OrderItem> getOrderItems() {

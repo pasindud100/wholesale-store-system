@@ -14,11 +14,9 @@ public class OrderItem {
     private int qty;
     private double price;
 
-
     @ManyToOne
-    @JoinColumn(name = "orderID")
+    @JoinColumn(name = "orderID", nullable = false)
     private Orderss order;
-
 
     @ManyToOne
     @JoinColumn(name = "productID", nullable = false)
