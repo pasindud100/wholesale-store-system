@@ -11,8 +11,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/order-items")
 public class OrderItemController {
-    @Autowired
-    private OrderItemService orderItemService;
+
+    private final OrderItemService orderItemService;
+
+    public OrderItemController(OrderItemService orderItemService) {
+        this.orderItemService = orderItemService;
+    }
 
     @PostMapping
     public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItemDTO orderItemDTO) {

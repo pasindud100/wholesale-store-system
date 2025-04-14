@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +20,16 @@ public class OrderItem {
     @JoinColumn(name = "productID", nullable = false)
     private Product product;
 
+    public OrderItem() {
+    }
+
+    public OrderItem(long id, int qty, double price, Orderss order, Product product) {
+        this.id = id;
+        this.qty = qty;
+        this.price = price;
+        this.order = order;
+        this.product = product;
+    }
 
     public long getId() {
         return id;

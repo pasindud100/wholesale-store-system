@@ -6,6 +6,16 @@ public class OrderItemDTO {
     private double price;
     private Long productId;
 
+    public OrderItemDTO() {
+    }
+
+    public OrderItemDTO(long id, int qty, double price, Long productId) {
+        this.id = id;
+        this.qty = qty;
+        this.price = price;
+        this.productId = productId;
+    }
+
     public long getId() {
         return id;
     }

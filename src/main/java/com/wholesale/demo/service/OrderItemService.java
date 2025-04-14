@@ -12,11 +12,14 @@ import java.util.List;
 
 @Service
 public class OrderItemService {
-    @Autowired
-    private OrderItemRepository orderItemRepository;
 
-    @Autowired
-    private OrderItemMapper orderItemMapper;
+    private final OrderItemRepository orderItemRepository;
+    private final OrderItemMapper orderItemMapper;
+
+    public OrderItemService(OrderItemRepository orderItemRepository, OrderItemMapper orderItemMapper) {
+        this.orderItemRepository = orderItemRepository;
+        this.orderItemMapper = orderItemMapper;
+    }
 
     @Transactional
     public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
