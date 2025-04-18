@@ -1,6 +1,8 @@
+// src/main/java/com/wholesale/demo/service/CategoryService.java
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.CategoryDTO;
+import com.wholesale.demo.exception.ResourceNotFoundException;
 import com.wholesale.demo.mapper.CategoryMapper;
 import com.wholesale.demo.model.Category;
 import com.wholesale.demo.repository.CategoryRepository;
@@ -35,24 +37,26 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<CategoryDTO> getCategoryById(Long id) {
-        Optional<Category> category = categoryRepository.findById(id);
-        return category.map(categoryMapper::toDTO);
+    public CategoryDTO getCategoryById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+        return categoryMapper.toDTO(category);
     }
+
     @Transactional
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
-        Optional<Category> category = categoryRepository.findById(id);
-        if (category.isPresent()) {
-            Category categoryToUpdate = categoryMapper.toEntity(categoryDTO);
-            categoryToUpdate.setId(id);
-            Category updatedCategory = categoryRepository.save(categoryToUpdate);
-            return categoryMapper.toDTO(updatedCategory);
-        }
-        return null;
+        Category categoryToUpdate = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+        categoryToUpdate.setName(categoryDTO.getName()); // Assuming Category has a name field
+        Category updatedCategory = categoryRepository.save(categoryToUpdate);
+        return categoryMapper.toDTO(updatedCategory);
     }
 
     @Transactional
     public void deleteCategory(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Category not found with id: " + id);
+        }
         categoryRepository.deleteById(id);
     }
 }
