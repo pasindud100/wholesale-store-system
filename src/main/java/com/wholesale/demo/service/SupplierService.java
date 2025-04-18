@@ -1,6 +1,7 @@
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.SupplierDTO;
+import com.wholesale.demo.exception.SupplierNotFoundException;
 import com.wholesale.demo.mapper.SupplierMapper;
 import com.wholesale.demo.model.Supplier;
 import com.wholesale.demo.repository.SupplierRepository;
@@ -37,7 +38,8 @@ public class SupplierService {
 
     public SupplierDTO getSupplierById(Long id) {
         Optional<Supplier> supplier = supplierRepository.findById(id);
-        return supplier.map(supplierMapper::toDTO).orElse(null);
+        return supplier.map(supplierMapper::toDTO)
+                .orElseThrow(() -> new SupplierNotFoundException("No supplier found with id: " + id));
     }
 
     @Transactional
@@ -49,11 +51,17 @@ public class SupplierService {
             Supplier updatedSupplier = supplierRepository.save(supplierToUpdate);
             return supplierMapper.toDTO(updatedSupplier);
         }
-        return null;
+       throw new SupplierNotFoundException("No supplier found with id: " + id);
     }
 
     @Transactional
     public void deleteSupplier(Long id) {
-        supplierRepository.deleteById(id);
+        Optional<Supplier> supplier = supplierRepository.findById(id);
+        if (supplier.isPresent()) {
+            supplierRepository.deleteById(id);
+        }
+        else {
+            throw new SupplierNotFoundException("No supplier found with id: " + id);
+        }
     }
 }

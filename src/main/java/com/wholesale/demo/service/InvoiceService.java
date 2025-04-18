@@ -1,6 +1,7 @@
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.InvoiceDTO;
+import com.wholesale.demo.exception.InvoiceNotFoundException;
 import com.wholesale.demo.mapper.InvoiceMapper;
 import com.wholesale.demo.model.Invoice;
 import com.wholesale.demo.repository.InvoiceRepository;
@@ -14,7 +15,6 @@ import java.util.List;
 public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
-
     private final InvoiceMapper invoiceMapper;
 
     public InvoiceService(InvoiceRepository invoiceRepository, InvoiceMapper invoiceMapper) {
@@ -40,6 +40,6 @@ public class InvoiceService {
     public InvoiceDTO getInvoiceById(Long id) {
         return invoiceRepository.findById(id)
                 .map(invoiceMapper::toDTO)
-                .orElse(null);
+                .orElseThrow(() -> new InvoiceNotFoundException("Invoice not found with id: " + id));
     }
 }

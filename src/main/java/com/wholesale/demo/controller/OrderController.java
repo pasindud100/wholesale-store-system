@@ -1,6 +1,8 @@
+// src/main/java/com/wholesale/demo/controller/OrderController.java
 package com.wholesale.demo.controller;
 
 import com.wholesale.demo.dto.OrderDTO;
+import com.wholesale.demo.exception.OrderNotFoundException;
 import com.wholesale.demo.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,20 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) throws OrderNotFoundException {
         OrderDTO order = orderService.getOrderById(id);
-        return order != null ? ResponseEntity.ok(order) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(order);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long id, @RequestBody OrderDTO orderDTO) throws OrderNotFoundException {
+        OrderDTO updatedOrder = orderService.updateOrder(id, orderDTO);
+        return ResponseEntity.ok(updatedOrder);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) throws OrderNotFoundException {
+        orderService.deleteOrder(id);
+        return ResponseEntity.noContent().build();
     }
 }

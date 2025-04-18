@@ -1,12 +1,9 @@
 package com.wholesale.demo.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-
 import java.util.List;
 
 @Entity
-@Data
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,10 +64,8 @@ public class Customer {
         this.orders = orders;
     }
 
-
     public Customer() {
     }
-
     public Customer(long id, String name, String address, String phone, String email, List<Orderss> orders) {
         this.id = id;
         this.name = name;
@@ -79,4 +74,6 @@ public class Customer {
         this.email = email;
         this.orders = orders;
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.PaymentDTO;
+import com.wholesale.demo.exception.PaymentNotFoundException;
 import com.wholesale.demo.mapper.PaymentMapper;
 import com.wholesale.demo.model.Payment;
 import com.wholesale.demo.repository.PaymentRepository;
@@ -36,6 +37,6 @@ public class PaymentService {
     public PaymentDTO getPaymentById(Long id) {
         return paymentRepository.findById(id)
                 .map(paymentMapper::toDTO)
-                .orElse(null);
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + id));
     }
 }

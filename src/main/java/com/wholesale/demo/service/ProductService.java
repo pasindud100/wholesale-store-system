@@ -1,6 +1,7 @@
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.ProductDTO;
+import com.wholesale.demo.exception.ProductNotFoundException;
 import com.wholesale.demo.mapper.ProductMapper;
 import com.wholesale.demo.model.Product;
 import com.wholesale.demo.repository.ProductRepository;
@@ -37,7 +38,8 @@ public class ProductService {
 
     public ProductDTO getProductById(Long id) {
         Optional<Product> product = productRepository.findById(id);
-        return product.map(productMapper ::toDTO).orElse(null);
+        return product.map(productMapper ::toDTO)
+                .orElseThrow(()-> new ProductNotFoundException("Searched product not found with id: " + id));
     }
 
     @Transactional
@@ -49,11 +51,17 @@ public class ProductService {
             Product updatedProduct = productRepository.save(productToUpdate);
             return productMapper.toDTO(updatedProduct);
         }
-        return null;
+        throw new ProductNotFoundException("Searched product not found with id: " + id);
     }
 
     @Transactional
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+        Optional<Product> product = productRepository.findById(id);
+       if(product.isPresent()) {
+           productRepository.delete(product.get());
+       }
+       else{
+           throw new ProductNotFoundException("Searched product not found with id: " + id);
+       }
     }
 }

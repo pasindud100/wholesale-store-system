@@ -1,4 +1,3 @@
-// src/main/java/com/wholesale/demo/service/CategoryService.java
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.CategoryDTO;
@@ -47,7 +46,7 @@ public class CategoryService {
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Category categoryToUpdate = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
-        categoryToUpdate.setName(categoryDTO.getName()); // Assuming Category has a name field
+        categoryToUpdate.setName(categoryDTO.getName());
         Category updatedCategory = categoryRepository.save(categoryToUpdate);
         return categoryMapper.toDTO(updatedCategory);
     }

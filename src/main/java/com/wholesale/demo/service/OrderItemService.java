@@ -1,6 +1,7 @@
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.OrderItemDTO;
+import com.wholesale.demo.exception.OrderItemNotFoundException;
 import com.wholesale.demo.mapper.OrderItemMapper;
 import com.wholesale.demo.model.OrderItem;
 import com.wholesale.demo.repository.OrderItemRepository;
@@ -39,6 +40,6 @@ public class OrderItemService {
     public OrderItemDTO getOrderItemById(Long id) {
         return orderItemRepository.findById(id)
                 .map(orderItemMapper::toDTO)
-                .orElse(null);
+                .orElseThrow(() -> new OrderItemNotFoundException("No OrderItem found with id: " + id));
     }
 }

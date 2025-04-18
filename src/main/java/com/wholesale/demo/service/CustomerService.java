@@ -1,6 +1,8 @@
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.CustomerDTO;
+import com.wholesale.demo.exception.CustomerNotFoundException;
+import com.wholesale.demo.exception.ResourceNotFoundException;
 import com.wholesale.demo.mapper.CustomerMapper;
 import com.wholesale.demo.model.Customer;
 import com.wholesale.demo.repository.CustomerRepository;
@@ -19,7 +21,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
 
-    public CustomerService(CustomerRepository customerRepository , CustomerMapper customerMapper) {
+    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
         this.customerMapper = customerMapper;
     }
@@ -30,44 +32,32 @@ public class CustomerService {
         return customerMapper.toDTO(savedCustomer);
     }
 
-//    public List<CustomerDTO> getAllCustomers() {
-//        return customerRepository.findAll()
-//        .stream().map(customerMapper::toDTO)
-//        .collect(Collectors.toList());
-//    }
-
     public Page<CustomerDTO> getAllCustomers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Customer> customersPage = customerRepository.findAll(pageable);
-
         return customersPage.map(customerMapper::toDTO);
     }
 
     public CustomerDTO getCustomerById(Long id) {
-        Optional<Customer> customer = customerRepository.findById(id);
-        return customer.map(customerMapper::toDTO).orElse(null);
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));
+        return customerMapper.toDTO(customer);
     }
 
     public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
-        Optional<Customer> customer = customerRepository.findById(id);
-
-        if(customer.isPresent()) {
-            Customer customerToUpdate = customerMapper.toEntity(customerDTO);
-            customerToUpdate.setId(id);
-            Customer updatedCustomer = customerRepository.save(customerToUpdate);
-            return customerMapper.toDTO(updatedCustomer);
-        }
-        return null;
-
+        Customer customerToUpdate = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));
+        customerToUpdate = customerMapper.toEntity(customerDTO);
+        customerToUpdate.setId(id);
+        Customer updatedCustomer = customerRepository.save(customerToUpdate);
+        return customerMapper.toDTO(updatedCustomer);
     }
-    public CustomerDTO deleteCustomer(Long id) {
-        Optional<Customer> customer = customerRepository.findById(id);
 
-        if (customer.isPresent()) {
-            customerRepository.deleteById(id); // Delete the customer
-            return customerMapper.toDTO(customer.get()); // Return the deleted customer details
-        }
-        return null; //give exception if the customer is not found
+    public CustomerDTO deleteCustomer(Long id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));
+        customerRepository.deleteById(id);
+        return customerMapper.toDTO(customer); // to return deleted customer details
     }
 
     public List<CustomerDTO> searchCustomers(String searchKeyword) {
