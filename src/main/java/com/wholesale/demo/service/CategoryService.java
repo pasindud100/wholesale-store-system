@@ -35,11 +35,10 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
-    public CategoryDTO getCategoryById(Long id) {
+    public Optional<CategoryDTO> getCategoryById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
-        return category.map(categoryMapper::toDTO).orElse(null);
+        return category.map(categoryMapper::toDTO);
     }
-
     @Transactional
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Optional<Category> category = categoryRepository.findById(id);

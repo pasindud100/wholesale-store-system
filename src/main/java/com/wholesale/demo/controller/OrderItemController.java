@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/order-items")
+@RequestMapping("/api/v1/order-items")
 public class OrderItemController {
 
     private final OrderItemService orderItemService;
@@ -18,7 +18,7 @@ public class OrderItemController {
         this.orderItemService = orderItemService;
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItemDTO orderItemDTO) {
         OrderItemDTO createdOrderItem = orderItemService.createOrderItem(orderItemDTO);
         return ResponseEntity.ok(createdOrderItem);

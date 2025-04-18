@@ -12,7 +12,6 @@ import java.util.List;
 @RequestMapping("/api/v1/invoices")
 public class InvoiceController {
 
-
     private final InvoiceService invoiceService;
 
     public InvoiceController(InvoiceService invoiceService) {

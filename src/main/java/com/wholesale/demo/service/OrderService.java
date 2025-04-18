@@ -69,6 +69,7 @@ public class OrderService {
                         orderItem.setQty(orderItemDTO.getQty());
                         orderItem.setPrice(orderItemDTO.getPrice());
 
+
                         // Fetch the product based on productId
                         Long productId = orderItemDTO.getProductId();
                         if (productId == null) {

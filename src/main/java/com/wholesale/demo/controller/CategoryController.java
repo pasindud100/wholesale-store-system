@@ -2,10 +2,12 @@ package com.wholesale.demo.controller;
 
 import com.wholesale.demo.dto.CategoryDTO;
 import com.wholesale.demo.service.CategoryService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/categories")
@@ -19,7 +21,7 @@ public class CategoryController {
     @PostMapping("/save")
     public ResponseEntity<CategoryDTO> saveCategory(@RequestBody CategoryDTO categoryDTO) {
         CategoryDTO savedCategory = categoryService.saveCategory(categoryDTO);
-        return ResponseEntity.ok(savedCategory);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
     //get all records
     @GetMapping
@@ -30,8 +32,14 @@ public class CategoryController {
     //get by id
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
-        CategoryDTO category = categoryService.getCategoryById(id);
-        return ResponseEntity.ok(category);
+        Optional<CategoryDTO> category = categoryService.getCategoryById(id);
+        if (category.isPresent()) {
+            // If the category is found, return it with a 200 OK status
+            return ResponseEntity.ok(category.get());
+        } else {
+            // If the category is not found, return a 404 Not Found status
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
     //update
     @PutMapping("/update/{id}")
