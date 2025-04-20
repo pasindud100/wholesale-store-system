@@ -1,14 +1,8 @@
 package com.wholesale.demo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +18,9 @@ public class OrderItem {
     @JoinColumn(name = "productID", nullable = false)
     private Product product;
 
+    // New field for subtotal
+    private double subtotal;
+
     public OrderItem() {
     }
 
@@ -33,6 +30,7 @@ public class OrderItem {
         this.price = price;
         this.order = order;
         this.product = product;
+        this.subtotal = calculateSubtotal(); // Calculate subtotal when creating the order item
     }
 
     public long getId() {
@@ -49,6 +47,7 @@ public class OrderItem {
 
     public void setQty(int qty) {
         this.qty = qty;
+        this.subtotal = calculateSubtotal(); // Update subtotal if quantity changes
     }
 
     public double getPrice() {
@@ -57,6 +56,7 @@ public class OrderItem {
 
     public void setPrice(double price) {
         this.price = price;
+        this.subtotal = calculateSubtotal(); // Update subtotal if price changes
     }
 
     public Orderss getOrder() {
@@ -73,5 +73,19 @@ public class OrderItem {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    // Method to calculate the subtotal for the order item
+    public double calculateSubtotal() {
+        return price * qty;
+    }
+
+    public double getSubtotal() {
+        return subtotal;
+    }
+
+    // Setter for subtotal (if needed)
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
     }
 }

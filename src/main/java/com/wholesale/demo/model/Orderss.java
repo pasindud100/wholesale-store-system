@@ -1,8 +1,6 @@
 package com.wholesale.demo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,7 +16,7 @@ public class Orderss {
     @JoinColumn(name = "customerID", nullable = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -27,18 +25,15 @@ public class Orderss {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Payment payment;
 
-
     public Orderss() {
     }
 
-    public Orderss(Long id, LocalDateTime orderDate, Customer customer,double amount, List<OrderItem> orderItems, Invoice invoice, Payment payment) {
+    public Orderss(Long id, LocalDateTime orderDate, Customer customer, double amount, List<OrderItem> orderItems, Invoice invoice, Payment payment) {
         this.id = id;
         this.orderDate = orderDate;
         this.customer = customer;
         this.amount = amount;
         this.orderItems = orderItems;
-        this.invoice = invoice;
-        this.payment = payment;
     }
 
     // Getters and Setters
@@ -69,6 +64,7 @@ public class Orderss {
     public double getAmount() {
         return amount;
     }
+
     public void setAmount(double amount) {
         this.amount = amount;
     }
@@ -79,6 +75,8 @@ public class Orderss {
 
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
+        // Calculate total amount based on order items
+        this.amount = orderItems.stream().mapToDouble(item -> item.getPrice() * item.getQty()).sum();
     }
 
     public Invoice getInvoice() {

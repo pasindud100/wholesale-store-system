@@ -1,4 +1,3 @@
-// src/main/java/com/wholesale/demo/controller/OrderController.java
 package com.wholesale.demo.controller;
 
 import com.wholesale.demo.dto.OrderDTO;

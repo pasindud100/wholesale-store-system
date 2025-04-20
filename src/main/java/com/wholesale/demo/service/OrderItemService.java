@@ -5,7 +5,6 @@ import com.wholesale.demo.exception.OrderItemNotFoundException;
 import com.wholesale.demo.mapper.OrderItemMapper;
 import com.wholesale.demo.model.OrderItem;
 import com.wholesale.demo.repository.OrderItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

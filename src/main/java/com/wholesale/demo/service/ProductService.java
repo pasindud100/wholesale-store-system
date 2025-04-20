@@ -7,7 +7,6 @@ import com.wholesale.demo.model.Product;
 import com.wholesale.demo.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

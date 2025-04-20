@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

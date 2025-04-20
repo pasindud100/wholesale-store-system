@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,9 +36,11 @@ public class OrderService {
 
     @Transactional
     public OrderDTO createOrder(OrderDTO orderDTO) {
+        // Fetch the customer based on the provided customer ID
         Customer customer = customerRepository.findById(orderDTO.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found with ID: " + orderDTO.getCustomerId()));
 
+        // Create a new order
         Orderss order = new Orderss();
         order.setOrderDate(LocalDateTime.now());
         order.setCustomer(customer);
@@ -61,21 +62,20 @@ public class OrderService {
                         Product product = productRepository.findById(productId)
                                 .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + productId));
                         orderItem.setProduct(product);
-                        orderItem.setOrder(order); //  order reference
+                        orderItem.setOrder(order); // Set the order reference
+                        orderItem.setSubtotal(orderItem.calculateSubtotal()); // Set the subtotal
                         return orderItem;
                     })
                     .collect(Collectors.toList());
-            order.setOrderItems(orderItems);
+            order.setOrderItems(orderItems); // This will also calculate the total amount
         }
 
+        // Save the order and return the DTO
         Orderss savedOrder = orderRepository.save(order);
         return orderMapper.toDTO(savedOrder);
     }
 
-    public List<Orderss> getOrdersByCustomer(Long customerId) {
-        return orderRepository.findByCustomerId(customerId);
-    }
-
+    @Transactional(readOnly = true)
     public List<OrderDTO> getAllOrders() {
         List<Orderss> orders = orderRepository.findAll();
         return orders.stream()
@@ -83,6 +83,7 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public OrderDTO getOrderById(Long id) throws OrderNotFoundException {
         Orderss order = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + id));
@@ -94,8 +95,9 @@ public class OrderService {
         Orderss existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + id));
 
-        // for update fields as necessary
+        // Update fields as necessary
         existingOrder.setOrderDate(LocalDateTime.now());
+        // You can also update other fields if needed
 
         Orderss updatedOrder = orderRepository.save(existingOrder);
         return orderMapper.toDTO(updatedOrder);
