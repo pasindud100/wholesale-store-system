@@ -1,6 +1,7 @@
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.OrderDTO;
+import com.wholesale.demo.dto.OrderItemDTO;
 import com.wholesale.demo.exception.CustomerNotFoundException;
 import com.wholesale.demo.exception.OrderNotFoundException;
 import com.wholesale.demo.exception.ProductNotFoundException;
@@ -63,8 +64,7 @@ public class OrderService {
                                 .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + productId));
                         orderItem.setProduct(product);
                         orderItem.setOrder(order); // Set the order reference
-                        orderItem.setSubtotal(orderItem.calculateSubtotal()); // Set the subtotal
-                        return orderItem;
+                        return orderItem; // subtotal will be calculated in the constructor
                     })
                     .collect(Collectors.toList());
             order.setOrderItems(orderItems); // This will also calculate the total amount
@@ -95,14 +95,36 @@ public class OrderService {
         Orderss existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + id));
 
-        // Update fields as necessary
+        // Update existing order fields
         existingOrder.setOrderDate(LocalDateTime.now());
-        // You can also update other fields if needed
+        existingOrder.setCustomer(customerRepository.findById(orderDTO.getCustomerId())
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with ID: " + orderDTO.getCustomerId())));
 
+        // Clear existing items and add updated ones
+        existingOrder.getOrderItems().clear(); // Clear existing items
+        if (orderDTO.getOrderItems() != null) {
+            for (OrderItemDTO orderItemDTO : orderDTO.getOrderItems()) {
+                OrderItem orderItem = new OrderItem();
+                orderItem.setQty(orderItemDTO.getQty());
+                orderItem.setPrice(orderItemDTO.getPrice());
+
+                Long productId = orderItemDTO.getProductId();
+                if (productId == null) {
+                    throw new ProductNotFoundException("Product ID cannot be null");
+                }
+
+                Product product = productRepository.findById(productId)
+                        .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + productId));
+                orderItem.setProduct(product);
+                orderItem.setOrder(existingOrder); // Set the order reference
+                existingOrder.addOrderItem(orderItem); // Add to the order
+            }
+        }
+
+        // Save the updated order
         Orderss updatedOrder = orderRepository.save(existingOrder);
         return orderMapper.toDTO(updatedOrder);
     }
-
     @Transactional
     public void deleteOrder(Long id) throws OrderNotFoundException {
         Orderss existingOrder = orderRepository.findById(id)

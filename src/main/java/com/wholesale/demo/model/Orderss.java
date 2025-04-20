@@ -2,6 +2,7 @@ package com.wholesale.demo.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,8 +17,8 @@ public class Orderss {
     @JoinColumn(name = "customerID", nullable = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Invoice invoice;
@@ -93,5 +94,17 @@ public class Orderss {
 
     public void setPayment(Payment payment) {
         this.payment = payment;
+    } public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this); // Set the parent reference
+        recalculateAmount(); // Recalculate the amount after adding an item
+    }
+
+    public void recalculateAmount() {
+        double totalAmount = 0;
+        for (OrderItem item : orderItems) {
+            totalAmount += item.getPrice() * item.getQty(); // Assuming price and qty are fields in OrderItem
+        }
+        this.amount = totalAmount; // Update the amount field in Orderss
     }
 }
