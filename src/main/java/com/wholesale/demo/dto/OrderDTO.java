@@ -1,26 +1,21 @@
 package com.wholesale.demo.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class OrderDTO {
     private Long id;
     private LocalDateTime orderDate;
     private Long customerId;
-    private List<OrderItemDTO> orderItems;
-    private Long invoiceId;
-    private Long paymentId;
+    private double amount; // Keep this field for the total amount
 
     public OrderDTO() {
     }
 
-    public OrderDTO(Long id, LocalDateTime orderDate, Long customerId, List<OrderItemDTO> orderItems, Long invoiceId, Long paymentId) {
+    public OrderDTO(Long id, LocalDateTime orderDate, Long customerId, double amount) {
         this.id = id;
         this.orderDate = orderDate;
         this.customerId = customerId;
-        this.orderItems = orderItems;
-        this.invoiceId = invoiceId;
-        this.paymentId = paymentId;
+        this.amount = amount;
     }
 
     public Long getId() {
@@ -47,27 +42,11 @@ public class OrderDTO {
         this.customerId = customerId;
     }
 
-    public List<OrderItemDTO> getOrderItems() {
-        return orderItems;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setOrderItems(List<OrderItemDTO> orderItems) {
-        this.orderItems = orderItems;
-    }
-
-    public Long getInvoiceId() {
-        return invoiceId;
-    }
-
-    public void setInvoiceId(Long invoiceId) {
-        this.invoiceId = invoiceId;
-    }
-
-    public Long getPaymentId() {
-        return paymentId;
-    }
-
-    public void setPaymentId(Long paymentId) {
-        this.paymentId = paymentId;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 }

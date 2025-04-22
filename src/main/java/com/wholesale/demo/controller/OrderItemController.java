@@ -2,9 +2,9 @@ package com.wholesale.demo.controller;
 
 import com.wholesale.demo.dto.OrderItemDTO;
 import com.wholesale.demo.service.OrderItemService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -18,9 +18,9 @@ public class OrderItemController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItemDTO orderItemDTO) {
+    public ResponseEntity<OrderItemDTO> saveOrderItem(@RequestBody OrderItemDTO orderItemDTO) {
         OrderItemDTO createdOrderItem = orderItemService.createOrderItem(orderItemDTO);
-        return ResponseEntity.ok(createdOrderItem);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrderItem);
     }
 
     @GetMapping
@@ -32,6 +32,18 @@ public class OrderItemController {
     @GetMapping("/{id}")
     public ResponseEntity<OrderItemDTO> getOrderItemById(@PathVariable Long id) {
         OrderItemDTO orderItem = orderItemService.getOrderItemById(id);
-        return orderItem != null ? ResponseEntity.ok(orderItem) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(orderItem);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<OrderItemDTO> updateOrderItem(@PathVariable Long id, @RequestBody OrderItemDTO orderItemDTO) {
+        OrderItemDTO updatedOrderItem = orderItemService.updateOrderItem(id, orderItemDTO);
+        return ResponseEntity.ok(updatedOrderItem);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteOrderItem(@PathVariable Long id) {
+        orderItemService.deleteOrderItemById(id);
+        return ResponseEntity.noContent().build();
     }
 }

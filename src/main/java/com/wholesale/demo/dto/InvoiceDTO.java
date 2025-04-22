@@ -8,7 +8,6 @@ public class InvoiceDTO {
     private Long orderId;
     double amount;
 
-
     public InvoiceDTO() {
     }
 

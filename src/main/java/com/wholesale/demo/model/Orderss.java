@@ -17,24 +17,17 @@ public class Orderss {
     @JoinColumn(name = "customerID", nullable = false)
     private Customer customer;
 
-    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
-
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Invoice invoice;
-
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Payment payment;
 
     public Orderss() {
     }
 
-    public Orderss(Long id, LocalDateTime orderDate, Customer customer, double amount, List<OrderItem> orderItems, Invoice invoice, Payment payment) {
+    public Orderss(Long id, LocalDateTime orderDate, Customer customer, double amount) {
         this.id = id;
         this.orderDate = orderDate;
         this.customer = customer;
         this.amount = amount;
-        this.orderItems = orderItems;
     }
 
     // Getters and Setters
@@ -76,35 +69,15 @@ public class Orderss {
 
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
-        // Calculate total amount based on order items
-        this.amount = orderItems.stream().mapToDouble(item -> item.getPrice() * item.getQty()).sum();
     }
 
-    public Invoice getInvoice() {
-        return invoice;
-    }
-
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    } public void addOrderItem(OrderItem orderItem) {
+    public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
         orderItem.setOrder(this); // Set the parent reference
         recalculateAmount(); // Recalculate the amount after adding an item
     }
 
     public void recalculateAmount() {
-        double totalAmount = 0;
-        for (OrderItem item : orderItems) {
-            totalAmount += item.getPrice() * item.getQty(); // Assuming price and qty are fields in OrderItem
-        }
-        this.amount = totalAmount; // Update the amount field in Orderss
+        this.amount = orderItems.stream().mapToDouble(OrderItem::getSubtotal). sum();
     }
 }

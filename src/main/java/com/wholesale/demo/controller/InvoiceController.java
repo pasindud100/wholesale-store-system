@@ -3,9 +3,9 @@ package com.wholesale.demo.controller;
 import com.wholesale.demo.dto.InvoiceDTO;
 import com.wholesale.demo.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -21,7 +21,7 @@ public class InvoiceController {
     @PostMapping("/save")
     public ResponseEntity<InvoiceDTO> createInvoice(@RequestBody InvoiceDTO invoiceDTO) {
         InvoiceDTO createdInvoice = invoiceService.createInvoice(invoiceDTO);
-        return ResponseEntity.ok(createdInvoice);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdInvoice);
     }
 
     @GetMapping
@@ -34,5 +34,11 @@ public class InvoiceController {
     public ResponseEntity<InvoiceDTO> getInvoiceById(@PathVariable Long id) {
         InvoiceDTO invoice = invoiceService.getInvoiceById(id);
         return invoice != null ? ResponseEntity.ok(invoice) : ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<InvoiceDTO> updateInvoice(@PathVariable Long id, @RequestBody InvoiceDTO invoiceDTO) {
+        InvoiceDTO updatedInvoice = invoiceService.updateInvoice(id, invoiceDTO);
+        return ResponseEntity.ok(updatedInvoice);
     }
 }

@@ -3,9 +3,9 @@ package com.wholesale.demo.controller;
 import com.wholesale.demo.dto.OrderDTO;
 import com.wholesale.demo.exception.OrderNotFoundException;
 import com.wholesale.demo.service.OrderService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -21,7 +21,7 @@ public class OrderController {
     @PostMapping("/save")
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         OrderDTO createdOrder = orderService.createOrder(orderDTO);
-        return ResponseEntity.ok(createdOrder);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
 
     @GetMapping
@@ -35,7 +35,6 @@ public class OrderController {
         OrderDTO order = orderService.getOrderById(id);
         return ResponseEntity.ok(order);
     }
-
     @PutMapping("/update/{id}")
     public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long id, @RequestBody OrderDTO orderDTO) throws OrderNotFoundException {
         OrderDTO updatedOrder = orderService.updateOrder(id, orderDTO);

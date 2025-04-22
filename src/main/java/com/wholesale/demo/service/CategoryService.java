@@ -1,6 +1,7 @@
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.CategoryDTO;
+import com.wholesale.demo.exception.CategoryAlreadyExistsException;
 import com.wholesale.demo.exception.ResourceNotFoundException;
 import com.wholesale.demo.mapper.CategoryMapper;
 import com.wholesale.demo.model.Category;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +24,15 @@ public class CategoryService {
 
     @Transactional
     public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
-        Category category = categoryMapper.toEntity(categoryDTO);
-        Category savedCategory = categoryRepository.save(category);
+//        Category category = categoryMapper.toEntity(categoryDTO);
+//        Category savedCategory = categoryRepository.save(category);
+//        return categoryMapper.toDTO(savedCategory);
+//
+    if(categoryRepository.existsByName(categoryDTO.getName())) {
+        throw new CategoryAlreadyExistsException("Category already exist with name "+categoryDTO.getName());
+    }
+        Category categoryToSave = categoryMapper.toEntity(categoryDTO);
+        Category savedCategory = categoryRepository.save(categoryToSave);
         return categoryMapper.toDTO(savedCategory);
     }
 

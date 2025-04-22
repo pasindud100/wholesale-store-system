@@ -2,6 +2,7 @@ package com.wholesale.demo.controller;
 
 import com.wholesale.demo.dto.SupplierDTO;
 import com.wholesale.demo.service.SupplierService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class SupplierController {
     @PostMapping("/save")
     public ResponseEntity<SupplierDTO> saveSupplier(@RequestBody SupplierDTO supplierDTO) {
         SupplierDTO savedSupplier = supplierService.saveSupplier(supplierDTO);
-        return ResponseEntity.ok(savedSupplier);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedSupplier);
     }
 
     @GetMapping

@@ -5,10 +5,8 @@ import com.wholesale.demo.exception.InvoiceNotFoundException;
 import com.wholesale.demo.mapper.InvoiceMapper;
 import com.wholesale.demo.model.Invoice;
 import com.wholesale.demo.repository.InvoiceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -42,4 +40,16 @@ public class InvoiceService {
                 .map(invoiceMapper::toDTO)
                 .orElseThrow(() -> new InvoiceNotFoundException("Invoice not found with id: " + id));
     }
+    @Transactional
+    public InvoiceDTO updateInvoice(Long id, InvoiceDTO invoiceDTO) {
+       Invoice invoiceToUpdate = invoiceRepository.findById(id)
+               .orElseThrow(() -> new InvoiceNotFoundException("Invoice not found with id: " + id));
+
+       invoiceToUpdate =invoiceMapper.toEntity(invoiceDTO);
+       invoiceToUpdate.setId(id);
+       Invoice updatedInvoice = invoiceRepository.save(invoiceToUpdate);
+       return invoiceMapper.toDTO(updatedInvoice);
+
+    }
+
 }

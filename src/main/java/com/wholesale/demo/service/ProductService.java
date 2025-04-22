@@ -1,12 +1,19 @@
 package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.ProductDTO;
+import com.wholesale.demo.exception.CategoryNotFoundException;
 import com.wholesale.demo.exception.ProductNotFoundException;
+import com.wholesale.demo.exception.SupplierNotFoundException;
 import com.wholesale.demo.mapper.ProductMapper;
+import com.wholesale.demo.model.Category;
 import com.wholesale.demo.model.Product;
+import com.wholesale.demo.model.Supplier;
+import com.wholesale.demo.repository.CategoryRepository;
 import com.wholesale.demo.repository.ProductRepository;
+import com.wholesale.demo.repository.SupplierRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,15 +21,25 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final SupplierRepository supplierRepository;
     private final ProductMapper productMapper;
 
-    public ProductService(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductService(ProductRepository productRepository,CategoryRepository categoryRepository, SupplierRepository supplierRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+        this.supplierRepository = supplierRepository;
         this.productMapper = productMapper;
     }
 
     @Transactional
     public ProductDTO saveProduct(ProductDTO productDTO) {
+        Category categoryExisting = categoryRepository.findById(productDTO.getCategoryId())
+                .orElseThrow(()->new CategoryNotFoundException("Category not found with id "+productDTO.getCategoryId()));
+
+        Supplier supplierExisting = supplierRepository.findById(productDTO.getSupplierId())
+                .orElseThrow(()->new SupplierNotFoundException("Supplier not found with id "+productDTO.getSupplierId()));
+
         Product product = productMapper.toEntity(productDTO);
         Product savedProduct = productRepository.save(product);
         return productMapper.toDTO(savedProduct);
@@ -36,31 +53,24 @@ public class ProductService {
     }
 
     public ProductDTO getProductById(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-        return product.map(productMapper ::toDTO)
-                .orElseThrow(()-> new ProductNotFoundException("Searched product not found with id: " + id));
+        return productRepository.findById(id)
+                .map(productMapper::toDTO)
+                .orElseThrow(() -> new ProductNotFoundException("Searched product not found with id: " + id));
     }
 
     @Transactional
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent()) {
-            Product productToUpdate = productMapper.toEntity(productDTO);
-            productToUpdate.setId(id);
-            Product updatedProduct = productRepository.save(productToUpdate);
-            return productMapper.toDTO(updatedProduct);
-        }
-        throw new ProductNotFoundException("Searched product not found with id: " + id);
+        Product productToUpdate = productMapper.toEntity(productDTO);
+        productToUpdate.setId(id);
+        Product updatedProduct = productRepository.save(productToUpdate);
+        return productMapper.toDTO(updatedProduct);
     }
 
     @Transactional
     public void deleteProduct(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-       if(product.isPresent()) {
-           productRepository.delete(product.get());
-       }
-       else{
-           throw new ProductNotFoundException("Searched product not found with id: " + id);
-       }
+        Product productToDelete = productRepository.findById(id).
+                orElseThrow(() -> new ProductNotFoundException("Searched product not found with id: " + id +". Then you cant delete."));
+
+        productRepository.delete(productToDelete);
     }
 }

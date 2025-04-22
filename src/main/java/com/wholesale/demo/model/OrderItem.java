@@ -6,38 +6,38 @@ import jakarta.persistence.*;
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
     private int qty;
     private double price;
 
     @ManyToOne
-    @JoinColumn(name = "orderID", nullable = false)
+    @JoinColumn(name = "orderid", nullable = false)
     private Orderss order;
 
     @ManyToOne
-    @JoinColumn(name = "productID", nullable = false)
+    @JoinColumn(name = "productid", nullable = false)
     private Product product;
 
-    // New field for subtotal
+    @Column(name = "subtotal")
     private double subtotal;
 
     public OrderItem() {
     }
 
-    public OrderItem(long id, int qty, double price, Orderss order, Product product) {
-        this.id = id;
+    public OrderItem(int qty, double price, Orderss order, Product product) {
         this.qty = qty;
         this.price = price;
         this.order = order;
         this.product = product;
-        this.subtotal = calculateSubtotal(); // Calculate subtotal when creating the order item
     }
 
-    public long getId() {
+    // Getters and Setters
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -47,7 +47,6 @@ public class OrderItem {
 
     public void setQty(int qty) {
         this.qty = qty;
-        this.subtotal = calculateSubtotal(); // Update subtotal if quantity changes
     }
 
     public double getPrice() {
@@ -56,7 +55,6 @@ public class OrderItem {
 
     public void setPrice(double price) {
         this.price = price;
-        this.subtotal = calculateSubtotal(); // Update subtotal if price changes
     }
 
     public Orderss getOrder() {
@@ -75,17 +73,10 @@ public class OrderItem {
         this.product = product;
     }
 
-    // Method to calculate the subtotal for the order item
-    public double calculateSubtotal() {
-        return price * qty;
-    }
-
     public double getSubtotal() {
-        return subtotal;
+        return qty * price; // Calculate subtotal
     }
-
-    // Setter for subtotal (if needed)
     public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
+        this.subtotal = subtotal; // Set subtotal directly if needed
     }
 }

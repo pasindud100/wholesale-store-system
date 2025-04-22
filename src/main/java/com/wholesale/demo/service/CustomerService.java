@@ -2,7 +2,6 @@ package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.CustomerDTO;
 import com.wholesale.demo.exception.CustomerNotFoundException;
-import com.wholesale.demo.exception.ResourceNotFoundException;
 import com.wholesale.demo.mapper.CustomerMapper;
 import com.wholesale.demo.model.Customer;
 import com.wholesale.demo.repository.CustomerRepository;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
