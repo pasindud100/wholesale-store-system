@@ -1,47 +1,50 @@
 package com.wholesale.demo.service;
 
+import com.wholesale.demo.dto.CustomerDTO;
+import com.wholesale.demo.dto.OrderDTO;
 import com.wholesale.demo.dto.OrderItemDTO;
 import com.wholesale.demo.exception.OrderItemNotFoundException;
 import com.wholesale.demo.exception.ProductNotFoundException;
 import com.wholesale.demo.exception.ResourceNotFoundException;
 import com.wholesale.demo.mapper.OrderItemMapper;
+import com.wholesale.demo.model.Customer;
 import com.wholesale.demo.model.OrderItem;
 import com.wholesale.demo.model.Orderss;
 import com.wholesale.demo.model.Product;
 import com.wholesale.demo.repository.OrderItemRepository;
 import com.wholesale.demo.repository.OrderRepository;
 import com.wholesale.demo.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderItemService {
 
-    private final OrderItemRepository orderItemRepository;
-    private final OrderItemMapper orderItemMapper;
-    private final ProductRepository productRepository;
-    private final OrderRepository orderRepository;
-
-    public OrderItemService(OrderItemRepository orderItemRepository, OrderItemMapper orderItemMapper, ProductRepository productRepository, OrderRepository orderRepository) {
-        this.orderItemRepository = orderItemRepository;
-        this.orderItemMapper = orderItemMapper;
-        this.productRepository = productRepository;
-        this.orderRepository = orderRepository;
-    }
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+    @Autowired
+    private OrderItemMapper orderItemMapper;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Transactional
     public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
         Long orderId = orderItemDTO.getOrderId();
         Long productId = orderItemDTO.getProductId();
 
-        // check order and product are exist from search ids. If Those are not exist custom exceptions.
         Orderss order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderItemNotFoundException("Order not found"));
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
-        // Check if there is enough stock to fulfill the order
         if (product.getStock() < orderItemDTO.getQty()) {
             throw new IllegalArgumentException("Not enough stock for product: " + product.getName());
         }
@@ -60,22 +63,23 @@ public class OrderItemService {
         //Calculate subtotal and set it
         double subtotal = orderItem.getPrice() * orderItem.getQty();
         orderItem.setSubtotal(subtotal);
-        orderItem = orderItemRepository.save(orderItem); // Save the order item
+        orderItem = orderItemRepository.save(orderItem);
 
         // Update the order amount
         order.setAmount(order.getAmount() + subtotal);
         orderRepository.save(order); // Save updated order amount
 
-        // Mapping to dto and return
         return orderItemMapper.toDTO(orderItem);
     }
 
-    public List<OrderItemDTO> getAllOrderItems() {
-        return orderItemRepository.findAll().stream()
-                .map(orderItemMapper::toDTO)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<OrderItemDTO> getAllOrderItems(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<OrderItem> orderItems = orderItemRepository.findAll(pageable);
+        return orderItems.map(orderItemMapper::toDTO);
     }
 
+    @Transactional(readOnly = true)
     public OrderItemDTO getOrderItemById(Long id) {
         OrderItem orderItem = orderItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("OrderItem not found"));//give exception
@@ -124,6 +128,7 @@ public class OrderItemService {
         return orderItemMapper.toDTO(existingOrderItem);
     }
 
+    @Transactional
     public void deleteOrderItemById(Long id) {
         OrderItem orderItem = orderItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("OrderItem not found"));
@@ -134,5 +139,13 @@ public class OrderItemService {
         order.setAmount(order.getAmount() - subtotal);
         orderRepository.save(order);
         orderItemRepository.delete(orderItem);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderItemDTO> searchOrderItems(String searchKeyword) {
+        List<OrderItem> orderItems = orderItemRepository.searchOrderItems(searchKeyword);
+        return orderItems.stream()
+                .map(orderItemMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

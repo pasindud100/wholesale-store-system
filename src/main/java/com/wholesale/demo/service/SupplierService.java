@@ -5,6 +5,7 @@ import com.wholesale.demo.exception.SupplierNotFoundException;
 import com.wholesale.demo.mapper.SupplierMapper;
 import com.wholesale.demo.model.Supplier;
 import com.wholesale.demo.repository.SupplierRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -13,13 +14,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class SupplierService {
-    private final SupplierRepository supplierRepository;
-    private final SupplierMapper supplierMapper;
 
-    public SupplierService(SupplierRepository supplierRepository, SupplierMapper supplierMapper) {
-        this.supplierRepository = supplierRepository;
-        this.supplierMapper = supplierMapper;
-    }
+    @Autowired
+    private SupplierRepository supplierRepository;
+    @Autowired
+    private SupplierMapper supplierMapper;
 
     @Transactional
     public SupplierDTO saveSupplier(SupplierDTO supplierDTO) {
@@ -35,6 +34,7 @@ public class SupplierService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public SupplierDTO getSupplierById(Long id) {
         Optional<Supplier> supplier = supplierRepository.findById(id);
         return supplier.map(supplierMapper::toDTO)

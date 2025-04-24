@@ -2,6 +2,8 @@ package com.wholesale.demo.controller;
 
 import com.wholesale.demo.dto.OrderItemDTO;
 import com.wholesale.demo.service.OrderItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +13,8 @@ import java.util.List;
 @RequestMapping("/api/v1/order-items")
 public class OrderItemController {
 
-    private final OrderItemService orderItemService;
-
-    public OrderItemController(OrderItemService orderItemService) {
-        this.orderItemService = orderItemService;
-    }
+    @Autowired
+    private OrderItemService orderItemService;
 
     @PostMapping("/save")
     public ResponseEntity<OrderItemDTO> saveOrderItem(@RequestBody OrderItemDTO orderItemDTO) {
@@ -24,8 +23,11 @@ public class OrderItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderItemDTO>> getAllOrderItems() {
-        List<OrderItemDTO> orderItems = orderItemService.getAllOrderItems();
+    public ResponseEntity<Page<OrderItemDTO>> getAllOrderItems(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        Page<OrderItemDTO> orderItems = orderItemService.getAllOrderItems(page, size);
         return ResponseEntity.ok(orderItems);
     }
 
@@ -45,5 +47,11 @@ public class OrderItemController {
     public ResponseEntity<Void> deleteOrderItem(@PathVariable Long id) {
         orderItemService.deleteOrderItemById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<OrderItemDTO>> searchOrderItems(@RequestParam String searchKeyword) {
+        List<OrderItemDTO> matchingCustomers = orderItemService.searchOrderItems(searchKeyword);
+        return ResponseEntity.ok(matchingCustomers); // Return the matching customers with HTTP 200 OK
     }
 }

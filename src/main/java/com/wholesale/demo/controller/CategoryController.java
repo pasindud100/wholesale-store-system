@@ -2,6 +2,8 @@ package com.wholesale.demo.controller;
 
 import com.wholesale.demo.dto.CategoryDTO;
 import com.wholesale.demo.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,15 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
-    private final CategoryService categoryService;
 
-    /**
-     * Constructor for CategoryController
-     * @param categoryService the service that handles business logic for categories
-     */
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
+    @Autowired
+    private CategoryService categoryService;
+
     /**
      * Endpoint to save a new category.
      * @param categoryDTO the data transfer object containing category details
@@ -31,17 +28,22 @@ public class CategoryController {
     @PostMapping("/save")
     public ResponseEntity<CategoryDTO> saveCategory(@RequestBody CategoryDTO categoryDTO) {
         CategoryDTO savedCategory = categoryService.saveCategory(categoryDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
+        return ResponseEntity.ok(savedCategory);
     }
     /**
      * Endpoint to retrieve all categories.
      * @return ResponseEntity containing a list of CategoryDTOs and HTTP status 200 (OK)
      */
+
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-        List<CategoryDTO> categories = categoryService.getAllCategories();
+    public ResponseEntity<Page<CategoryDTO>> getAllCategories(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        Page<CategoryDTO> categories = categoryService.getAllCategories(page, size);
         return ResponseEntity.ok(categories);
     }
+
     /**
      * Endpoint to retrieve a category by its ID.
      * @param id the ID of the category to retrieve
@@ -72,5 +74,10 @@ public class CategoryController {
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok("Category is deleted successfully");
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<CategoryDTO>> searchCategory(@RequestParam String searchKeyword) {
+        List<CategoryDTO> matchingCategories = categoryService.searchCategory(searchKeyword);
+        return ResponseEntity.ok(matchingCategories); // Return the matching customers with HTTP 200 OK
     }
 }

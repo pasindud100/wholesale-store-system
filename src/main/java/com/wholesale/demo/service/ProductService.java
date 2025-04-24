@@ -11,26 +11,24 @@ import com.wholesale.demo.model.Supplier;
 import com.wholesale.demo.repository.CategoryRepository;
 import com.wholesale.demo.repository.ProductRepository;
 import com.wholesale.demo.repository.SupplierRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
-    private final SupplierRepository supplierRepository;
-    private final ProductMapper productMapper;
 
-    public ProductService(ProductRepository productRepository,CategoryRepository categoryRepository, SupplierRepository supplierRepository, ProductMapper productMapper) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.supplierRepository = supplierRepository;
-        this.productMapper = productMapper;
-    }
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private SupplierRepository supplierRepository;
+    @Autowired
+    private ProductMapper productMapper;
 
     @Transactional
     public ProductDTO saveProduct(ProductDTO productDTO) {
@@ -60,6 +58,8 @@ public class ProductService {
 
     @Transactional
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(()->new ProductNotFoundException("Searched product not found with id: " + id));
         Product productToUpdate = productMapper.toEntity(productDTO);
         productToUpdate.setId(id);
         Product updatedProduct = productRepository.save(productToUpdate);

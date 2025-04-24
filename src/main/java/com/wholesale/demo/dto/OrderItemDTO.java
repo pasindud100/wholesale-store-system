@@ -3,9 +3,8 @@ package com.wholesale.demo.dto;
 public class OrderItemDTO {
     private int qty;
     private double price;
-    private Long orderId; // This will map to orderid
-    private Long productId; // This will map to productid
-
+    private Long orderId;
+    private Long productId;
     public OrderItemDTO() {
     }
 
@@ -16,7 +15,6 @@ public class OrderItemDTO {
         this.productId = productId;
     }
 
-    // Getters and Setters
     public int getQty() {
         return qty;
     }

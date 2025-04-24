@@ -8,6 +8,10 @@ import com.wholesale.demo.model.Customer;
 import com.wholesale.demo.model.Orderss;
 import com.wholesale.demo.repository.CustomerRepository;
 import com.wholesale.demo.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,15 +22,12 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
-    private final OrderRepository orderRepository;
-    private final CustomerRepository customerRepository;
-    private final OrderMapper orderMapper;
-
-    public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository, OrderMapper orderMapper) {
-        this.orderRepository = orderRepository;
-        this.customerRepository = customerRepository;
-        this.orderMapper = orderMapper;
-    }
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private OrderMapper orderMapper;
 
     @Transactional
     public OrderDTO createOrder(OrderDTO orderDTO) {
@@ -43,11 +44,10 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderDTO> getAllOrders() {
-        List<Orderss> orders = orderRepository.findAll();
-        return orders.stream()
-                .map(orderMapper::toDTO)
-                .collect(Collectors.toList());
+    public Page<OrderDTO> getAllOrders(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Orderss> orders = orderRepository.findAll(pageable);
+        return orders.map(orderMapper::toDTO);
     }
 
     @Transactional(readOnly = true)
@@ -76,5 +76,13 @@ public class OrderService {
 
         Orderss updatedOrder = orderRepository.save(existingOrder);
         return orderMapper.toDTO(updatedOrder);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderDTO> searchOrders(String searchKeyword) {
+        List<Orderss> orders = orderRepository.serarchOrders(searchKeyword);
+        return orders.stream()
+                .map(orderMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

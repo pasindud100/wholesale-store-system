@@ -8,16 +8,6 @@ public class InvoiceDTO {
     private Long orderId;
     double amount;
 
-    public InvoiceDTO() {
-    }
-
-    public InvoiceDTO(Long id, LocalDateTime invoiceDate, Long orderId, double amount) {
-        this.id = id;
-        this.invoiceDate = invoiceDate;
-        this.orderId = orderId;
-        this.amount = amount;
-    }
-
     public Long getId() {
         return id;
     }
@@ -41,10 +31,23 @@ public class InvoiceDTO {
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
+
     public double getAmount() {
         return amount;
     }
+
     public void setAmount(double amount) {
         this.amount = amount;
     }
+
+    public InvoiceDTO() {
+    }
+
+    public InvoiceDTO(Long id, LocalDateTime invoiceDate, Long orderId, double amount) {
+        this.id = id;
+        this.invoiceDate = invoiceDate;
+        this.orderId = orderId;
+        this.amount = amount;
+    }
+
 }

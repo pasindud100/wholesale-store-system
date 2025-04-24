@@ -46,7 +46,6 @@ public class GlobalExceptionHandler{
     public ResponseEntity<String> handleOrderItemNotFoundException(OrderItemNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
-
     @ExceptionHandler(CategoryAlreadyExistsException.class)
     public ResponseEntity<String> handleCategoryAlreadyExistsException(CategoryAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
@@ -56,6 +55,17 @@ public class GlobalExceptionHandler{
     public ResponseEntity<String> handleCategoryNotFoundException(CategoryNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    @ExceptionHandler(AmountGreateOrLessException.class)
+    public ResponseEntity<String> handleAmountGreateOrLessException(AmountGreateOrLessException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvoiceAlreadyPaidException.class)
+    public ResponseEntity<String> handleInvoiceAlreadyPaidException(InvoiceAlreadyPaidException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
     //for generic exception..
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex){

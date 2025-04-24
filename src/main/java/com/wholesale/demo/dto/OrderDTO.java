@@ -6,17 +6,7 @@ public class OrderDTO {
     private Long id;
     private LocalDateTime orderDate;
     private Long customerId;
-    private double amount; // Keep this field for the total amount
-
-    public OrderDTO() {
-    }
-
-    public OrderDTO(Long id, LocalDateTime orderDate, Long customerId, double amount) {
-        this.id = id;
-        this.orderDate = orderDate;
-        this.customerId = customerId;
-        this.amount = amount;
-    }
+    private double amount;
 
     public Long getId() {
         return id;
@@ -47,6 +37,17 @@ public class OrderDTO {
     }
 
     public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+
+    public OrderDTO() {
+    }
+
+    public OrderDTO(Long id, LocalDateTime orderDate, Long customerId, double amount) {
+        this.id = id;
+        this.orderDate = orderDate;
+        this.customerId = customerId;
         this.amount = amount;
     }
 }

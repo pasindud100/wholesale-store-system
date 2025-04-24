@@ -2,10 +2,15 @@ package com.wholesale.demo.service;
 
 import com.wholesale.demo.dto.CategoryDTO;
 import com.wholesale.demo.exception.CategoryAlreadyExistsException;
+import com.wholesale.demo.exception.CategoryNotFoundException;
 import com.wholesale.demo.exception.ResourceNotFoundException;
 import com.wholesale.demo.mapper.CategoryMapper;
 import com.wholesale.demo.model.Category;
 import com.wholesale.demo.repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,20 +19,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
-    private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
 
-    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
-        this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
-    }
+    @Autowired
+    private  CategoryRepository categoryRepository;
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     @Transactional
     public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
-//        Category category = categoryMapper.toEntity(categoryDTO);
-//        Category savedCategory = categoryRepository.save(category);
-//        return categoryMapper.toDTO(savedCategory);
-//
     if(categoryRepository.existsByName(categoryDTO.getName())) {
         throw new CategoryAlreadyExistsException("Category already exist with name "+categoryDTO.getName());
     }
@@ -36,13 +35,14 @@ public class CategoryService {
         return categoryMapper.toDTO(savedCategory);
     }
 
-    public List<CategoryDTO> getAllCategories() {
-        return categoryRepository.findAll()
-                .stream()
-                .map(categoryMapper::toDTO)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<CategoryDTO> getAllCategories(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Category> categoriesPage = categoryRepository.findAll(pageable);
+        return categoriesPage.map(categoryMapper::toDTO);
     }
 
+    @Transactional(readOnly = true)
     public CategoryDTO getCategoryById(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
@@ -65,4 +65,17 @@ public class CategoryService {
         }
         categoryRepository.deleteById(id);
     }
+
+    @Transactional(readOnly = true)
+    public List<CategoryDTO> searchCategory(String searchKeyword) {
+        List<Category> categories = categoryRepository.searchCategory(searchKeyword);
+
+        if (categories.isEmpty()) {
+            throw new CategoryNotFoundException("No categories found matching with " + searchKeyword);
+        }
+        return categories.stream()
+                .map(categoryMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
 }

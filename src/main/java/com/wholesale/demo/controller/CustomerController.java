@@ -2,6 +2,7 @@ package com.wholesale.demo.controller;
 
 import com.wholesale.demo.dto.CustomerDTO;
 import com.wholesale.demo.service.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/customers") // Base URL for customer-related operations
 public class CustomerController {
-    private final CustomerService customerService; // Service layer for customer operations
 
-    // Constructor for dependency injection of CustomerService
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
-    }
+    @Autowired
+    private CustomerService customerService; // Service layer for customer operations
+
     /**
      * Endpoint to save a new customer.
      * @param customerDTO the customer data transfer object containing customer details
