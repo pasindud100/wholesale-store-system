@@ -66,14 +66,12 @@ public class InvoiceService {
         return invoiceMapper.toDTO(invoice);
     }
 
-    @Transactional(readOnly = true)
     public Page<InvoiceDTO> getAllInvoices(int page, int size) {
-       Pageable pageable = PageRequest.of(page, size);
-       Page<Invoice> invoicesPage = invoiceRepository.findAll(pageable);
-       return invoicesPage.map(invoiceMapper::toDTO);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Invoice> invoicesPage = invoiceRepository.findAll(pageable);
+        return invoicesPage.map(invoiceMapper::toDTO);
     }
 
-    @Transactional(readOnly = true)
     public InvoiceDTO getInvoiceById(Long id) {
         return invoiceRepository.findById(id)
                 .map(invoiceMapper::toDTO)
@@ -82,11 +80,11 @@ public class InvoiceService {
 
     @Transactional
     public InvoiceDTO updateInvoice(Long id, InvoiceDTO invoiceDTO) throws OrderNotFoundException {
-       Invoice invoiceToUpdate = invoiceRepository.findById(id)
-               .orElseThrow(() -> new InvoiceNotFoundException("Invoice not found with id: " + id));
+        Invoice invoiceToUpdate = invoiceRepository.findById(id)
+                .orElseThrow(() -> new InvoiceNotFoundException("Invoice not found with id: " + id));
 
-       Orderss order = orderRepository.findById(invoiceDTO.getOrderId())
-               .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + invoiceDTO.getOrderId()));
+        Orderss order = orderRepository.findById(invoiceDTO.getOrderId())
+                .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + invoiceDTO.getOrderId()));
 
         Orderss existingOrder = orderRepository.findById(invoiceDTO.getOrderId()).
                 orElseThrow(()-> new OrderNotFoundException("No any order with id "+
@@ -111,10 +109,10 @@ public class InvoiceService {
                             ". Get the remaining amount to issue the invoice.");
         }
 
-       invoiceToUpdate =invoiceMapper.toEntity(invoiceDTO);
-       invoiceToUpdate.setId(id);
-       Invoice updatedInvoice = invoiceRepository.save(invoiceToUpdate);
-       return invoiceMapper.toDTO(updatedInvoice);
+        invoiceToUpdate =invoiceMapper.toEntity(invoiceDTO);
+        invoiceToUpdate.setId(id);
+        Invoice updatedInvoice = invoiceRepository.save(invoiceToUpdate);
+        return invoiceMapper.toDTO(updatedInvoice);
     }
 
     @Transactional(readOnly = true)

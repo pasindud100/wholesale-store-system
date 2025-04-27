@@ -5,6 +5,7 @@ import java.util.List;
 
 @Entity
 public class Customer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -13,6 +14,8 @@ public class Customer {
     private String phone;
     private String email;
 
+    //  @OneToMany annotation defines a one-to-many relationship between Customer and Orderss.
+    //  mappedBy attribute indicates that the customer field in the Orderss class is the owner of the relationship.
     @OneToMany(mappedBy = "customer")
     private List<Orderss> orders;
 
@@ -66,6 +69,8 @@ public class Customer {
 
     public Customer() {
     }
+
+    // Constructor with all fields for the Customer class.
     public Customer(long id, String name, String address, String phone, String email, List<Orderss> orders) {
         this.id = id;
         this.name = name;
@@ -74,6 +79,4 @@ public class Customer {
         this.email = email;
         this.orders = orders;
     }
-
-
 }

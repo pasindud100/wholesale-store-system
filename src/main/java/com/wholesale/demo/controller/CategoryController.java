@@ -4,37 +4,25 @@ import com.wholesale.demo.dto.CategoryDTO;
 import com.wholesale.demo.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-/**
- * CategoryController is a REST controller that handles HTTP requests related to category management.
- * It provides endpoints for creating, retrieving, updating, and deleting categories.
- */
 @RestController
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
 
     @Autowired
-    private CategoryService categoryService;
+    private CategoryService categoryService; // Service layer for category operations
 
-    /**
-     * Endpoint to save a new category.
-     * @param categoryDTO the data transfer object containing category details
-     * @return ResponseEntity containing the saved CategoryDTO and HTTP status 201 (Created)
-     */
+    //save
     @PostMapping("/save")
     public ResponseEntity<CategoryDTO> saveCategory(@RequestBody CategoryDTO categoryDTO) {
         CategoryDTO savedCategory = categoryService.saveCategory(categoryDTO);
-        return ResponseEntity.ok(savedCategory);
+        return ResponseEntity.status(201).body(savedCategory); // Using status 201 for creation
     }
-    /**
-     * Endpoint to retrieve all categories.
-     * @return ResponseEntity containing a list of CategoryDTOs and HTTP status 200 (OK)
-     */
 
+    //get all
     @GetMapping
     public ResponseEntity<Page<CategoryDTO>> getAllCategories(
             @RequestParam(defaultValue = "0") int page,
@@ -44,40 +32,31 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    /**
-     * Endpoint to retrieve a category by its ID.
-     * @param id the ID of the category to retrieve
-     * @return ResponseEntity containing the CategoryDTO and HTTP status 200 (OK)
-     */
+    //get by id
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
         CategoryDTO category = categoryService.getCategoryById(id);
-        return ResponseEntity.ok(category);
+        return category != null ? ResponseEntity.ok(category) : ResponseEntity.notFound().build(); // Handle null case
     }
-    /**
-     * Endpoint to update an existing category.
-     * @param id the ID of the category to update
-     * @param categoryDTO the data transfer object containing updated category details
-     * @return ResponseEntity containing the updated CategoryDTO and HTTP status 200 (OK)
-     */
+
+    //update
     @PutMapping("/update/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
         CategoryDTO updatedCategory = categoryService.updateCategory(id, categoryDTO);
         return ResponseEntity.ok(updatedCategory);
     }
-    /**
-     * Endpoint to delete a category by its ID
-     * @param id the ID of the category to delete
-     * @return ResponseEntity containing a success message and HTTP status 200 (OK)
-     */
+
+    //delete
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.ok("Category is deleted successfully");
+        return ResponseEntity.ok("Category deleted successfully");
     }
+
+    //search
     @GetMapping("/search")
     public ResponseEntity<List<CategoryDTO>> searchCategory(@RequestParam String searchKeyword) {
         List<CategoryDTO> matchingCategories = categoryService.searchCategory(searchKeyword);
-        return ResponseEntity.ok(matchingCategories); // Return the matching customers with HTTP 200 OK
+        return ResponseEntity.ok(matchingCategories); // Return the matching categories
     }
 }

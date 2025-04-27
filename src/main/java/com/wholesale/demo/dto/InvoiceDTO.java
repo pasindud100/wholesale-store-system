@@ -3,10 +3,14 @@ package com.wholesale.demo.dto;
 import java.time.LocalDateTime;
 
 public class InvoiceDTO {
+
     private Long id;
+
     private LocalDateTime invoiceDate;
+
     private Long orderId;
-    double amount;
+
+    private double amount;
 
     public Long getId() {
         return id;
@@ -49,5 +53,4 @@ public class InvoiceDTO {
         this.orderId = orderId;
         this.amount = amount;
     }
-
 }

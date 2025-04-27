@@ -21,28 +21,36 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     @Autowired
-    private  CategoryRepository categoryRepository;
+    private  CategoryRepository categoryRepository;  // Injecting the Category repository to interact with the database.
+
     @Autowired
     private CategoryMapper categoryMapper;
 
     @Transactional
     public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
-    if(categoryRepository.existsByName(categoryDTO.getName())) {
-        throw new CategoryAlreadyExistsException("Category already exist with name "+categoryDTO.getName());
-    }
+        // Check if the category with the same name already exists
+        if(categoryRepository.existsByName(categoryDTO.getName())) {
+            throw new CategoryAlreadyExistsException("Category already exist with name "+categoryDTO.getName());
+        }
+
+        // Convert the categoryDto to a category entity
         Category categoryToSave = categoryMapper.toEntity(categoryDTO);
+
+        // Save the category in the database
         Category savedCategory = categoryRepository.save(categoryToSave);
+
+        // Convert and return the saved category entity as a CategoryDTO
         return categoryMapper.toDTO(savedCategory);
     }
 
-    @Transactional(readOnly = true)
     public Page<CategoryDTO> getAllCategories(int page, int size) {
+        // Define pagination information
         Pageable pageable = PageRequest.of(page, size);
         Page<Category> categoriesPage = categoryRepository.findAll(pageable);
+
         return categoriesPage.map(categoryMapper::toDTO);
     }
 
-    @Transactional(readOnly = true)
     public CategoryDTO getCategoryById(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
@@ -51,15 +59,21 @@ public class CategoryService {
 
     @Transactional
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
+        // Find the existing category by its id
         Category categoryToUpdate = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+
+        // Update the category name
         categoryToUpdate.setName(categoryDTO.getName());
+
+        // Save the updated category and return it as a DTO
         Category updatedCategory = categoryRepository.save(categoryToUpdate);
         return categoryMapper.toDTO(updatedCategory);
     }
 
     @Transactional
     public void deleteCategory(Long id) {
+        // Check if the category exists before attempting to delete
         if (!categoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Category not found with id: " + id);
         }
@@ -68,8 +82,10 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public List<CategoryDTO> searchCategory(String searchKeyword) {
+        // Retrieve categories matching the search keyword
         List<Category> categories = categoryRepository.searchCategory(searchKeyword);
 
+        // If no categories are found, throw an exception
         if (categories.isEmpty()) {
             throw new CategoryNotFoundException("No categories found matching with " + searchKeyword);
         }
@@ -77,5 +93,4 @@ public class CategoryService {
                 .map(categoryMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
 }

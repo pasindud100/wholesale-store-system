@@ -17,20 +17,15 @@ public class Orderss {
     @JoinColumn(name = "customerID", nullable = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public Orderss() {
-    }
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Invoice invoice;
 
-    public Orderss(Long id, LocalDateTime orderDate, Customer customer, double amount) {
-        this.id = id;
-        this.orderDate = orderDate;
-        this.customer = customer;
-        this.amount = amount;
-    }
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Payment payment;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -47,20 +42,20 @@ public class Orderss {
         this.orderDate = orderDate;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public double getAmount() {
         return amount;
     }
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public List<OrderItem> getOrderItems() {
@@ -71,13 +66,32 @@ public class Orderss {
         this.orderItems = orderItems;
     }
 
-    public void addOrderItem(OrderItem orderItem) {
-        orderItems.add(orderItem);
-        orderItem.setOrder(this); // Set the parent reference
-        recalculateAmount(); // Recalculate the amount after adding an item
+    public Invoice getInvoice() {
+        return invoice;
     }
 
-    public void recalculateAmount() {
-        this.amount = orderItems.stream().mapToDouble(OrderItem::getSubtotal). sum();
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public Orderss() {
+    }
+
+    public Orderss(Long id, LocalDateTime orderDate, double amount, Customer customer, List<OrderItem> orderItems, Invoice invoice, Payment payment) {
+        this.id = id;
+        this.orderDate = orderDate;
+        this.amount = amount;
+        this.customer = customer;
+        this.orderItems = orderItems;
+        this.invoice = invoice;
+        this.payment = payment;
     }
 }

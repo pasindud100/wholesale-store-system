@@ -1,7 +1,9 @@
 package com.wholesale.demo.dto;
 
 public class CategoryDTO {
+
     private Long id;
+
     private String name;
 
     public Long getId() {
@@ -27,5 +29,4 @@ public class CategoryDTO {
         this.id = id;
         this.name = name;
     }
-
 }

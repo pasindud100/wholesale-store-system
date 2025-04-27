@@ -10,6 +10,8 @@ public class Category {
     private Long id;
     private String name;
 
+    // The @OneToMany annotation defines a one-to-many relationship between Category and Product.
+    // The 'mappedBy' attribute indicates that the 'category' field in the Product class is the owner of the relationship.
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 

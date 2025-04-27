@@ -1,18 +1,29 @@
 package com.wholesale.demo.dto;
 
 public class OrderItemDTO {
+    private Long id;
     private int qty;
     private double price;
-    private Long orderId;
+    private double subtotal;
     private Long productId;
+
     public OrderItemDTO() {
     }
 
-    public OrderItemDTO(int qty, double price, Long orderId, Long productId) {
+    public OrderItemDTO(Long id, int qty, double price, double subtotal, Long productId) {
+        this.id = id;
         this.qty = qty;
         this.price = price;
-        this.orderId = orderId;
+        this.subtotal = subtotal;
         this.productId = productId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getQty() {
@@ -31,12 +42,12 @@ public class OrderItemDTO {
         this.price = price;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public double getSubtotal() {
+        return subtotal;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
     }
 
     public Long getProductId() {

@@ -11,8 +11,10 @@ import java.util.List;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
+
     Page<Customer> findAll(Pageable pageable);
 
+    // Custom query to search customers based on multiple fields like name, address, phone, and email.
     @Query("SELECT customer FROM Customer customer WHERE " +
             "LOWER(customer.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(customer.address) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +

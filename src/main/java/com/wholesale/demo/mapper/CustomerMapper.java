@@ -5,10 +5,10 @@ import com.wholesale.demo.model.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+//componentModel = "spring" ensures that the generated implementation is managed by Spring as a Bean.
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
-    CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
 
-    Customer toEntity(CustomerDTO dto);
-    CustomerDTO toDTO(Customer entity);
+     Customer toEntity(CustomerDTO dto);
+     CustomerDTO toDTO(Customer entity);
 }

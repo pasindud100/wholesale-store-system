@@ -3,6 +3,7 @@ package com.wholesale.demo.dto;
 import java.time.LocalDateTime;
 
 public class PaymentDTO {
+
     private Long id;
     private LocalDateTime paymentDate;
     private Double paidAmount;
@@ -17,11 +18,9 @@ public class PaymentDTO {
     public void setId(Long id) {
         this.id = id;
     }
-
     public double getPaidAmount() {
         return paidAmount;
     }
-
     public void setPaidAmount(double paidAmount) {
         this.paidAmount = paidAmount;
     }

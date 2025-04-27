@@ -16,6 +16,7 @@ public class SupplierController {
     @Autowired
     private SupplierService supplierService;
 
+    //save
     @PostMapping("/save")
     public ResponseEntity<SupplierDTO> saveSupplier(@RequestBody SupplierDTO supplierDTO) {
         SupplierDTO savedSupplier = supplierService.saveSupplier(supplierDTO);

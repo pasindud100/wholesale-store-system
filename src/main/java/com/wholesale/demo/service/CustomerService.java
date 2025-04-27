@@ -30,14 +30,12 @@ public class CustomerService {
         return customerMapper.toDTO(savedCustomer);
     }
 
-    @Transactional(readOnly = true)
     public Page<CustomerDTO> getAllCustomers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Customer> customersPage = customerRepository.findAll(pageable);
         return customersPage.map(customerMapper::toDTO);
     }
 
-    @Transactional(readOnly = true)
     public CustomerDTO getCustomerById(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));
@@ -54,7 +52,6 @@ public class CustomerService {
         return customerMapper.toDTO(updatedCustomer);
     }
 
-    @Transactional
     public CustomerDTO deleteCustomer(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));

@@ -5,6 +5,7 @@ import java.util.List;
 
 @Entity
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -13,6 +14,8 @@ public class Product {
     private int stock;
     private double price;
 
+    // The @ManyToOne annotation specifies that a product can have one supplier.
+    // The @JoinColumn annotation indicates the foreign key column for the supplier.
     @ManyToOne
     @JoinColumn(name = "supplierID", nullable = false)
     private Supplier supplier;
@@ -23,8 +26,6 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
-
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -33,6 +34,7 @@ public class Product {
         this.id = id;
     }
 
+    // Getter and setter for 'name', the name of the product.
     public String getName() {
         return name;
     }
@@ -41,6 +43,7 @@ public class Product {
         this.name = name;
     }
 
+    // Getter and setter for 'description', the product's description.
     public String getDescription() {
         return description;
     }
@@ -49,6 +52,7 @@ public class Product {
         this.description = description;
     }
 
+    // Getter and setter for 'stock', the quantity of the product in stock.
     public int getStock() {
         return stock;
     }
@@ -57,6 +61,7 @@ public class Product {
         this.stock = stock;
     }
 
+    // Getter and setter for 'price', the price of the product.
     public double getPrice() {
         return price;
     }
@@ -81,6 +86,7 @@ public class Product {
         this.category = category;
     }
 
+    // Getter and setter for 'orderItems', a list of order items associated with the product.
     public List<OrderItem> getOrderItems() {
         return orderItems;
     }
@@ -88,4 +94,6 @@ public class Product {
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
+
+
 }

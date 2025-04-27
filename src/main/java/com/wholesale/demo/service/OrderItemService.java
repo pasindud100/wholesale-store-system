@@ -1,13 +1,11 @@
 package com.wholesale.demo.service;
 
-import com.wholesale.demo.dto.CustomerDTO;
-import com.wholesale.demo.dto.OrderDTO;
 import com.wholesale.demo.dto.OrderItemDTO;
 import com.wholesale.demo.exception.OrderItemNotFoundException;
+import com.wholesale.demo.exception.OutOfStockException;
 import com.wholesale.demo.exception.ProductNotFoundException;
 import com.wholesale.demo.exception.ResourceNotFoundException;
 import com.wholesale.demo.mapper.OrderItemMapper;
-import com.wholesale.demo.model.Customer;
 import com.wholesale.demo.model.OrderItem;
 import com.wholesale.demo.model.Orderss;
 import com.wholesale.demo.model.Product;
@@ -35,42 +33,44 @@ public class OrderItemService {
     @Autowired
     private OrderRepository orderRepository;
 
-    @Transactional
-    public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
-        Long orderId = orderItemDTO.getOrderId();
-        Long productId = orderItemDTO.getProductId();
-
-        Orderss order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderItemNotFoundException("Order not found"));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-
-        if (product.getStock() < orderItemDTO.getQty()) {
-            throw new IllegalArgumentException("Not enough stock for product: " + product.getName());
-        }
-
-        // Create the order item
-        OrderItem orderItem = new OrderItem();
-        orderItem.setQty(orderItemDTO.getQty());
-        orderItem.setPrice(orderItemDTO.getPrice());
-        orderItem.setOrder(order); // Set the order
-        orderItem.setProduct(product);
-
-        //Updating  product stock
-        product.setStock(product.getStock() - orderItemDTO.getQty());
-        productRepository.save(product);
-
-        //Calculate subtotal and set it
-        double subtotal = orderItem.getPrice() * orderItem.getQty();
-        orderItem.setSubtotal(subtotal);
-        orderItem = orderItemRepository.save(orderItem);
-
-        // Update the order amount
-        order.setAmount(order.getAmount() + subtotal);
-        orderRepository.save(order); // Save updated order amount
-
-        return orderItemMapper.toDTO(orderItem);
-    }
+//    @Transactional
+//    public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
+////        Long orderId = orderItemDTO.getOrderId();
+//        Long productId = orderItemDTO.getProductId();
+//
+////        Orderss order = orderRepository.findById(orderId)
+////                .orElseThrow(() -> new OrderItemNotFoundException("Order not found"));
+//        Product product = productRepository.findById(productId)
+//                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+//
+//
+//        if (product.getStock() < orderItemDTO.getQty()) {
+//            throw new OutOfStockException("Not enough stock for product named " + product.getName()
+//            +" to fulfill your order. Stock have only " + product.getStock() +" items.");
+//        }
+//
+//        // Create the order item
+//        OrderItem orderItem = new OrderItem();
+//        orderItem.setQty(orderItemDTO.getQty());
+//        orderItem.setPrice(orderItemDTO.getPrice());
+    ////        orderItem.setOrder(order); // Set the order
+//        orderItem.setProduct(product);
+//
+//        //Updating  product stock
+//        product.setStock(product.getStock() - orderItemDTO.getQty());
+//        productRepository.save(product);
+//
+//        //Calculate subtotal and set it
+//        double subtotal = orderItem.getPrice() * orderItem.getQty();
+//        orderItem.setSubtotal(subtotal);
+//        orderItem = orderItemRepository.save(orderItem);
+//
+//        // Update the order amount
+//        order.setAmount(order.getAmount() + subtotal);
+//        orderRepository.save(order); // Save updated order amount
+//
+//        return orderItemMapper.toDTO(orderItem);
+//    }
 
     @Transactional(readOnly = true)
     public Page<OrderItemDTO> getAllOrderItems(int page, int size) {
@@ -79,7 +79,6 @@ public class OrderItemService {
         return orderItems.map(orderItemMapper::toDTO);
     }
 
-    @Transactional(readOnly = true)
     public OrderItemDTO getOrderItemById(Long id) {
         OrderItem orderItem = orderItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("OrderItem not found"));//give exception

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
-
+    List<OrderItem> findByOrder(Orderss order);
     Optional<OrderItem> findByOrderId(Long orderId);
     Page<OrderItem> findAll(Pageable pageable);
 

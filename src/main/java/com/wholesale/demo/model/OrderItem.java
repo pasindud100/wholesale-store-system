@@ -1,5 +1,4 @@
 package com.wholesale.demo.model;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -7,9 +6,9 @@ public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private int qty;
     private double price;
+    private double subtotal;
 
     @ManyToOne
     @JoinColumn(name = "orderid", nullable = false)
@@ -19,20 +18,6 @@ public class OrderItem {
     @JoinColumn(name = "productid", nullable = false)
     private Product product;
 
-    @Column(name = "subtotal")
-    private double subtotal;
-
-    public OrderItem() {
-    }
-
-    public OrderItem(int qty, double price, Orderss order, Product product) {
-        this.qty = qty;
-        this.price = price;
-        this.order = order;
-        this.product = product;
-    }
-
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -57,6 +42,14 @@ public class OrderItem {
         this.price = price;
     }
 
+    public double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
+    }
+
     public Orderss getOrder() {
         return order;
     }
@@ -73,10 +66,15 @@ public class OrderItem {
         this.product = product;
     }
 
-    public double getSubtotal() {
-        return qty * price; // Calculate subtotal
+    public OrderItem() {
     }
-    public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal; // Set subtotal directly if needed
+
+    public OrderItem(Long id, int qty, double price, double subtotal, Orderss order, Product product) {
+        this.id = id;
+        this.qty = qty;
+        this.price = price;
+        this.subtotal = subtotal;
+        this.order = order;
+        this.product = product;
     }
 }
